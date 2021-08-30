@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.connectycube.flutter.connectycube_flutter_call_kit">
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <application>
+        <receiver android:name=".EventReceiver" />
+        <service android:name=".CallForegroundService" />
+        <activity
+            android:name=".IncomingCallActivity"
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
+            android:noHistory="true"
+            android:screenOrientation="sensorPortrait"
+            android:taskAffinity="com.connectycube.flutter.connectycube_flutter_call_kit.INCOMING_CALL_AFFINITY"
+            android:theme="@android:style/Theme.Holo.NoActionBar" />
+    </application>
+</manifest>
