@@ -1,6 +1,7 @@
 package com.connectycube.flutter.connectycube_flutter_call_kit
 
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -13,11 +14,12 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import androidx.annotation.Nullable
+import androidx.core.view.accessibility.AccessibilityEventCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 
 fun createStartIncomingScreenIntent(context: Context, callId: String, callType: Int, callInitiatorId: Int,
-                                    callInitiatorName: String, opponents: ArrayList<Int>): Intent {
+                                    callInitiatorName: String, opponents: ArrayList<Int>,callInfo: String): Intent {
     val intent = Intent(context, IncomingCallActivity::class.java)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     intent.putExtra(EXTRA_CALL_ID, callId)
@@ -25,6 +27,7 @@ fun createStartIncomingScreenIntent(context: Context, callId: String, callType: 
     intent.putExtra(EXTRA_CALL_INITIATOR_ID, callInitiatorId)
     intent.putExtra(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
     intent.putIntegerArrayListExtra(EXTRA_CALL_OPPONENTS, opponents)
+    intent.putExtra(EXTRA_CALL_INFO, callInfo)
     return intent
 }
 
@@ -37,20 +40,25 @@ class IncomingCallActivity : Activity() {
     private var callInitiatorId = -1
     private var callInitiatorName: String? = null
     private var callOpponents: ArrayList<Int>? = ArrayList()
+    private var callInfo: String? = null
 
 
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        setContentView(resources.getIdentifier("activity_incoming_call", "layout", packageName))
-
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O_MR1) {
             setShowWhenLocked(true)
             setTurnScreenOn(true)
+            val keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            keyguardManager.requestDismissKeyguard(this, null)
         } else {
-            window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                    or WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or
+                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
                     WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
         }
+
+        setContentView(resources.getIdentifier("activity_incoming_call", "layout", packageName))
 
         processIncomingData(intent)
         initUi()
@@ -109,6 +117,7 @@ class IncomingCallActivity : Activity() {
         callInitiatorId = intent.getIntExtra(EXTRA_CALL_INITIATOR_ID, -1)
         callInitiatorName = intent.getStringExtra(EXTRA_CALL_INITIATOR_NAME)
         callOpponents = intent.getIntegerArrayListExtra(EXTRA_CALL_OPPONENTS)
+        callInfo = intent.getStringExtra(EXTRA_CALL_INFO)
     }
 
     private fun initUi() {
@@ -141,6 +150,7 @@ class IncomingCallActivity : Activity() {
         bundle.putInt(EXTRA_CALL_INITIATOR_ID, callInitiatorId)
         bundle.putString(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
         bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
+        bundle.putString(EXTRA_CALL_INFO, callInfo)
 
         val startCallIntent = Intent(this, EventReceiver::class.java)
         startCallIntent.action = ACTION_CALL_ACCEPT

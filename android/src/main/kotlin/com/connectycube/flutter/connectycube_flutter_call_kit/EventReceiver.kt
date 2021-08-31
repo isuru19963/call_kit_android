@@ -24,6 +24,7 @@ class EventReceiver : BroadcastReceiver() {
                 val callInitiatorId = extras?.getInt(EXTRA_CALL_INITIATOR_ID)
                 val callInitiatorName = extras?.getString(EXTRA_CALL_INITIATOR_NAME)
                 val callOpponents = extras?.getIntegerArrayList(EXTRA_CALL_OPPONENTS)
+                val callInfo= extras?.getString(EXTRA_CALL_INFO)
                 Log.i(TAG, "NotificationReceiver onReceive Call REJECT, callId: $callId")
 
                 val broadcastIntent = Intent(ACTION_CALL_REJECT)
@@ -33,6 +34,7 @@ class EventReceiver : BroadcastReceiver() {
                 bundle.putInt(EXTRA_CALL_INITIATOR_ID, callInitiatorId!!)
                 bundle.putString(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
                 bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
+                bundle.putString(EXTRA_CALL_INFO, callInfo)
                 broadcastIntent.putExtras(bundle)
 
                 LocalBroadcastManager.getInstance(context.applicationContext)
@@ -48,6 +50,7 @@ class EventReceiver : BroadcastReceiver() {
                 val callInitiatorId = extras?.getInt(EXTRA_CALL_INITIATOR_ID)
                 val callInitiatorName = extras?.getString(EXTRA_CALL_INITIATOR_NAME)
                 val callOpponents = extras?.getIntegerArrayList(EXTRA_CALL_OPPONENTS)
+                val callInfo= extras?.getString(EXTRA_CALL_INFO)
                 Log.i(TAG, "NotificationReceiver onReceive Call ACCEPT, callId: $callId")
 
                 val broadcastIntent = Intent(ACTION_CALL_ACCEPT)
@@ -57,6 +60,7 @@ class EventReceiver : BroadcastReceiver() {
                 bundle.putInt(EXTRA_CALL_INITIATOR_ID, callInitiatorId!!)
                 bundle.putString(EXTRA_CALL_INITIATOR_NAME, callInitiatorName)
                 bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
+                bundle.putString(EXTRA_CALL_INFO, callInfo)
                 broadcastIntent.putExtras(bundle)
 
                 LocalBroadcastManager.getInstance(context.applicationContext)

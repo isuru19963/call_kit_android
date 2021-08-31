@@ -10,6 +10,7 @@ typedef Future<dynamic> CallEventHandler(
   int callerId,
   String callerName,
   Set<int> opponentsIds,
+  String callInfo,
 );
 
 class ConnectycubeFlutterCallKit {
@@ -62,6 +63,7 @@ class ConnectycubeFlutterCallKit {
     @required int callerId,
     @required String callerName,
     @required Set<int> opponentsIds,
+    String callInfo,
   }) async {
     if (!Platform.isAndroid) return;
 
@@ -71,6 +73,7 @@ class ConnectycubeFlutterCallKit {
       'caller_id': callerId,
       'caller_name': callerName,
       'call_opponents': opponentsIds.join(','),
+      'call_info':callInfo
     });
   }
 
@@ -137,6 +140,7 @@ class ConnectycubeFlutterCallKit {
               .split(',')
               .map((stringUserId) => int.parse(stringUserId))
               .toSet(),
+          map["call_info"],
         );
       case "onCallRejected":
         if (onCallAcceptedWhenTerminated != null) {
@@ -160,6 +164,7 @@ class ConnectycubeFlutterCallKit {
               .split(',')
               .map((stringUserId) => int.parse(stringUserId))
               .toSet(),
+          map["call_info"],
         );
       default:
         throw UnsupportedError("Unrecognized JSON message");
