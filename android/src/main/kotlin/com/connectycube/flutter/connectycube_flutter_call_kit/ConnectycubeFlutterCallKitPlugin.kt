@@ -280,4 +280,9 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler, Plugi
         broadcastIntent.putExtras(bundle)
         localBroadcastManager.sendBroadcast(broadcastIntent)
     }
+    fun registerWith(registrar: PluginRegistry.Registrar) {
+        mainActivity = registrar.activity()
+        registrar.addNewIntentListener(this)
+        onAttachedToEngine(registrar.context(), registrar.messenger())
+    }
 }
