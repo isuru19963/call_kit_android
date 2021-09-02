@@ -32,6 +32,7 @@ import android.content.SharedPreferences
 class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler, PluginRegistry.NewIntentListener, ActivityAware, BroadcastReceiver() {
     private var applicationContext: Context? = null
     private var mainActivity: Activity? = null
+    private var myLaunchIntent: Intent? = null
     private lateinit var channel: MethodChannel
     private lateinit var localBroadcastManager: LocalBroadcastManager
 
