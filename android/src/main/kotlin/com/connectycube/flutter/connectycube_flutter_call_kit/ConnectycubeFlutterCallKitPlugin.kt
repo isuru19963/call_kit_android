@@ -24,6 +24,7 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.PluginRegistry
 import kotlin.system.exitProcess
+import android.content.SharedPreferences
 
 
 /** ConnectycubeFlutterCallKitPlugin */
@@ -172,9 +173,14 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler, Plugi
             mainActivity?.setShowWhenLocked(isVisible)
         } else {
             if (isVisible) {
-                mainActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+                mainActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD)
+                mainActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+                mainActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                mainActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                mainActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             } else {
-                mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+                mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+                mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             }
         }
     }
@@ -218,12 +224,15 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler, Plugi
                 channel.invokeMethod("onCallRejected", parameters)
             }
             ACTION_CALL_ACCEPT -> {
-                saveCallState(callIdToProcess!!, CALL_STATE_ACCEPTED)
+                 saveCallState(callIdToProcess!!, CALL_STATE_ACCEPTED)
 
                 channel.invokeMethod("onCallAccepted", parameters)
 
                 val launchIntent = getLaunchIntent(context!!)
+                myLaunchIntent = launchIntent;
                 launchIntent?.action = ACTION_CALL_ACCEPT
+                val sharedPref: SharedPreferences = context.getSharedPreferences("lockKey", Context.MODE_PRIVATE)
+                sharedPref?.edit()?.putBoolean("locked", false)?.commit();
                 context.startActivity(launchIntent)
             }
         }
@@ -269,8 +278,9 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler, Plugi
     }
 
     private fun processCallEnded(sessionId: String) {
-        if (applicationContext == null) return
+     if (applicationContext == null) return
 
+        val callState = getCallState(sessionId)
         saveCallState(sessionId, CALL_STATE_REJECTED)
         cancelCallNotification(applicationContext!!, sessionId)
 
@@ -279,6 +289,13 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler, Plugi
         bundle.putString(EXTRA_CALL_ID, sessionId)
         broadcastIntent.putExtras(bundle)
         localBroadcastManager.sendBroadcast(broadcastIntent)
+        if (CALL_STATE_ACCEPTED == callState) {
+            mainActivity?.finish();
+            myLaunchIntent?.action = ACTION_CALL_REJECT
+            val sharedPref: SharedPreferences? = mainActivity?.getSharedPreferences("lockKey", Context.MODE_PRIVATE)
+            sharedPref?.edit()?.putBoolean("locked", true)?.commit();
+            mainActivity?.startActivity(myLaunchIntent)
+        }
     }
     fun registerWith(registrar: PluginRegistry.Registrar) {
         mainActivity = registrar.activity()
