@@ -181,8 +181,11 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler, Plugi
                 mainActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
                 mainActivity?.window?.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             } else {
+                mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
                 mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-                mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                mainActivity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             }
         }
     }
