@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.connectycube.flutter.connectycube_flutter_call_kit">
-
+   <service android:enabled="true"
+     android:name="imedirep.healthcare.com"
+       android:foregroundServiceType="camera|microphone"/>
     <application>
         <receiver android:name=".EventReceiver" />
         <activity
