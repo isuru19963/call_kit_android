@@ -73,8 +73,8 @@ class ConnectycubeFlutterCallKitPlugin : FlutterPlugin, MethodCallHandler, Plugi
 
 
                     //open app when notification received
-                    val launchIntent = getLaunchIntent(applicationContext!!)
-                    applicationContext!!.startActivity(launchIntent)
+                   // val launchIntent = getLaunchIntent(applicationContext!!)
+                   // applicationContext!!.startActivity(launchIntent)
 
                     result.success(null)
                 } catch (e: Exception) {

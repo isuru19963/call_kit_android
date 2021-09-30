@@ -62,6 +62,9 @@ class EventReceiver : BroadcastReceiver() {
                 bundle.putIntegerArrayList(EXTRA_CALL_OPPONENTS, callOpponents)
                 bundle.putString(EXTRA_CALL_INFO, callInfo)
                 broadcastIntent.putExtras(bundle)
+                
+                 val launchIntent = getLaunchIntent(context.applicationContext!!)
+                 context.applicationContext!!.startActivity(launchIntent)
 
                 LocalBroadcastManager.getInstance(context.applicationContext)
                         .sendBroadcast(broadcastIntent)

@@ -1,8 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.connectycube.flutter.connectycube_flutter_call_kit">
-   <service android:enabled="true"
-     android:name="imedirep.healthcare.com"
-       android:foregroundServiceType="camera|microphone"/>
     <application>
         <receiver android:name=".EventReceiver" />
         <activity
@@ -23,4 +20,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera" />
 </manifest>
